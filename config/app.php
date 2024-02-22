@@ -168,6 +168,11 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
+
+        ////////////////////////////////////////
+        /////CUSTOM PROVIDERS ///////////
+        ///////////////////////////////////////
+        Laravel\Passport\PassportServiceProvider::class,
     ])->toArray(),
 
     /*

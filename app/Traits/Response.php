@@ -1,10 +1,10 @@
 <?php
-namespace App\Http\Traits;
+namespace App\Traits;
 
-use Symfony\Component\HttpFoundation\Response as HttpFoundationResponse;
+use Symfony\Component\HttpFoundation\Response as HttpResponse;
 
 /**
- * @author Daniel Ozeh hello@danielozeh.com.ng
+ * @author Gift Amah
  */
 
 trait Response {
@@ -28,28 +28,28 @@ trait Response {
 
     public function sendSuccess($array = []) 
     {
-        $array = $this->validateArray($array, true, HttpFoundationResponse::HTTP_OK);
+        $array = $this->validateArray($array, true, HttpResponse::HTTP_OK);
         return $this->response($array['status'], $array['message'], $array['status_code'], $array['data']);
     }
 
     public function sendError($array = []) 
     {
-        $array = $this->validateArray($array,false, HttpFoundationResponse::HTTP_BAD_REQUEST);
+        $array = $this->validateArray($array,false, HttpResponse::HTTP_BAD_REQUEST);
         return $this->response($array['status'], $array['message'], $array['status_code'], $array['data']);
     }
 
     public function internalServerError($e) 
     {
-        return $this->response(false, "Whoops..an error occurred", HttpFoundationResponse::HTTP_INTERNAL_SERVER_ERROR, []);
+        return $this->response(false, "Whoops..an error occurred", HttpResponse::HTTP_INTERNAL_SERVER_ERROR, []);
     }
 
     public function internalServerError2($e) 
     {
-        return $this->response(false, $e->getMessage(), HttpFoundationResponse::HTTP_INTERNAL_SERVER_ERROR, []);
+        return $this->response(false, $e->getMessage(), HttpResponse::HTTP_INTERNAL_SERVER_ERROR, []);
     }
 
     public function validatorError($validator) 
     {
-        return $this->response(false, $validator->errors(), HttpFoundationResponse::HTTP_UNPROCESSABLE_ENTITY, []);
+        return $this->response(false, $validator->errors(), HttpResponse::HTTP_UNPROCESSABLE_ENTITY, []);
     }
 }
