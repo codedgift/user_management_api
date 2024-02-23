@@ -7,6 +7,7 @@ use App\Http\Requests\LoginRequest;
 use App\Services\LoginService;
 use App\Traits\Response;
 use Exception;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Exceptions\UserNotVerifiedException;
@@ -18,25 +19,33 @@ class LoginController extends Controller
 {
     use Response;
 
-    protected $loginService;
+    protected LoginService $loginService;
 
-    public function __construct (LoginService $loginService) 
+    /**
+     * @param LoginService $loginService
+     */
+    public function __construct (LoginService $loginService)
     {
         $this->loginService = $loginService;
     }
 
-    public function login (LoginRequest $request) 
+    /**
+     * @param LoginRequest $request
+     * @return JsonResponse
+     */
+    public function login (LoginRequest $request) : \Illuminate\Http\JsonResponse
     {
         try {
 
             $loginData = $this->loginService->authenticate($request->only(['email', 'password']));
 
-            return $this->sendSuccess([
-                'message' => 'Login successful',
-                'data' => $loginData
-            ], HttpResponse::HTTP_OK);
+            return $this->sendSuccess(
+                    ['message' => 'Login successful','data' => $loginData],
+                    HttpResponse::HTTP_OK
+                );
 
         } catch (InvalidCredentialsException | UserNotVerifiedException | UserDeletedException $e) {
+
             $status = match (get_class($e)) {
                 InvalidCredentialsException::class => HttpResponse::HTTP_UNAUTHORIZED,
                 UserNotVerifiedException::class => HttpResponse::HTTP_FORBIDDEN,
@@ -44,12 +53,14 @@ class LoginController extends Controller
                 default => HttpResponse::HTTP_BAD_REQUEST,
             };
 
-            return $this->sendError([
-                'message' => $e->getMessage(), 
-                'status_code' => $status
-                ]);
+            return $this->sendError(['message' => $e->getMessage(), 'status_code' => $status]);
+
         } catch (Exception $e) {
-            return $this->sendError('An unexpected error occurred', HttpResponse::HTTP_INTERNAL_SERVER_ERROR);
+
+            return $this->sendError([
+                    'message' => $e->getMessage(),
+                    'status_code' => HttpResponse::HTTP_INTERNAL_SERVER_ERROR
+                ]);
         }
     }
 }

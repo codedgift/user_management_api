@@ -7,7 +7,7 @@ use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Symfony\Component\HttpFoundation\Response;
 
-class LoginRequest extends FormRequest
+class UpdateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,8 +25,8 @@ class LoginRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => 'required|email',
-            'password' => 'required|string'
+            'name' => 'string|max:255',
+            'role' => 'string|in:admin,user'
         ];
     }
 
@@ -34,8 +34,8 @@ class LoginRequest extends FormRequest
      * @param Validator $validator
      * @return mixed
      */
-    protected function failedValidation(Validator $validator)
+    protected function failedValidation(Validator $validator): mixed
     {
-        throw new HttpResponseException(response()->json(['status' => false, 'message' => 'Oops!, Something is wrong', 'errors' => $validator->errors()], Response::HTTP_UNPROCESSABLE_ENTITY));
+        throw new HttpResponseException(response()->json(['status' => false, 'message' => 'Something is wrong', 'errors' => $validator->errors()], Response::HTTP_UNPROCESSABLE_ENTITY));
     }
 }

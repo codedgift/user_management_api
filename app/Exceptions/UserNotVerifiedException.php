@@ -7,10 +7,22 @@ use Exception;
 
 class UserNotVerifiedException extends Exception
 {
+    /**
+     * @var string
+     */
     protected $message = 'Please verify your account to proceed.';
-    protected $code = Response::HTTP_LOCKED; 
 
-    // Optionally, you can customize the constructor if you need more flexibility
+    /**
+     * @var int
+     */
+    protected $code = Response::HTTP_LOCKED;
+
+
+    /**
+     * @param $message
+     * @param $code
+     * @param Exception|null $previous
+     */
     public function __construct($message = null, $code = null, Exception $previous = null)
     {
         // If a custom message is provided, use it, otherwise use the default

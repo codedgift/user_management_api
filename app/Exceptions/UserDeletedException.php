@@ -7,10 +7,22 @@ use Exception;
 
 class UserDeletedException extends Exception
 {
+    /**
+     * @var string
+     */
     protected $message = 'Account with this email has been deleted.';
+
+    /**
+     * @var int
+     */
     protected $code = Response::HTTP_NOT_FOUND;
 
-    // Optionally, you can customize the constructor if you need more flexibility
+
+    /**
+     * @param $message
+     * @param $code
+     * @param Exception|null $previous
+     */
     public function __construct($message = null, $code = null, Exception $previous = null)
     {
         // If a custom message is provided, use it, otherwise use the default

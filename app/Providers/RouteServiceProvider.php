@@ -28,6 +28,17 @@ class RouteServiceProvider extends ServiceProvider
             return Limit::perMinute(60)->by($request->user()?->id ?: $request->ip());
         });
 
+        RateLimiter::for('login_register', function (Request $request) {
+            // Less allowance during night hours
+            $hour = now()->hour;
+            $limit = ($hour >= 21 || $hour < 6) ? 3 : 5;
+        
+            return Limit::perMinute($limit)->by($request->user()?->id ?: $request->user()?->email ?: $request->ip())->response(function(Request $request, array $headers) {
+                $retryAfter = $headers['Retry-After'] ?? null;
+                return response()->json(['message' => 'Too many requests, please slow down.', 'retryAfter' => $retryAfter], 429);
+            });
+        });
+
         $this->routes(function () {
             Route::middleware('api')
                 ->prefix('api/v1')

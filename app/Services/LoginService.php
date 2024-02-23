@@ -12,7 +12,14 @@ use App\Exceptions\UserDeletedException;
 class LoginService
 {
 
-    public function authenticate($credentials)
+    /**
+     * @param $credentials
+     * @return array
+     * @throws InvalidCredentialsException
+     * @throws UserDeletedException
+     * @throws UserNotVerifiedException
+     */
+    public function authenticate($credentials): array
     {
         if (!Auth::attempt($credentials)) {
             throw new InvalidCredentialsException('Invalid credentials provided');
@@ -26,7 +33,13 @@ class LoginService
         return $this->generateTokenResponse($user);
     }
 
-    protected function validateUser(User $user)
+    /**
+     * @param User $user
+     * @return void
+     * @throws UserDeletedException
+     * @throws UserNotVerifiedException
+     */
+    protected function validateUser(User $user): void
     {
         if ($user->deleted_at !== null) {
             throw new UserDeletedException('Account with this email has been deleted');
@@ -37,16 +50,28 @@ class LoginService
         }
     }
 
-    protected function revokeExistingTokens(User $user)
+    /**
+     * @param User $user
+     * @return void
+     */
+    protected function revokeExistingTokens(User $user): void
     {
         Token::where('user_id', $user->id)->update(['revoked' => true]);
     }
 
-    protected function createNewTokenForUser(User $user)
+    /**
+     * @param User $user
+     * @return string
+     */
+    protected function createNewTokenForUser(User $user): string
     {
         return $user->createToken('ApexNetworksAuthToken')->accessToken;
     }
 
+    /**
+     * @param User $user
+     * @return array
+     */
     protected function generateTokenResponse(User $user): array
     {
         $tokenResult = $user->createToken('ApexNetworksAuthToken');
