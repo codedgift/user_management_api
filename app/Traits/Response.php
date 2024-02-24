@@ -32,6 +32,12 @@ trait Response {
         return $this->response($array['status'], $array['message'], $array['status_code'], $array['data']);
     }
 
+    public function sendSuccess2($array = []) 
+    {
+        $array = $this->validateArray($array, true, HttpResponse::HTTP_CREATED);
+        return $this->response($array['status'], $array['message'], $array['status_code'], $array['data']);
+    }
+
     public function sendError($array = []) 
     {
         $array = $this->validateArray($array,false, HttpResponse::HTTP_BAD_REQUEST);

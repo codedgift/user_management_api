@@ -38,7 +38,7 @@ class RegistrationController extends Controller
 
             $user = $this->registrationService->register($request);
 
-            return $this->sendSuccess(
+            return $this->sendSuccess2(
                 [
                     'message' => 'User registered successfully.',
                     'data' => $user
