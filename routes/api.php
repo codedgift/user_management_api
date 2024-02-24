@@ -33,7 +33,7 @@ Route::group(['prefix' => 'auth', 'middleware' => 'throttle:login_register'], fu
 //////////////////////////////////////////////////////////////////
 ///////////// START OF USER ROUTES///////////////
 /////////////////////////////////////////////////////////////////
-Route::group(['prefix' => 'user', 'middleware' => 'passport.auth'], function($router) {
+Route::group(['prefix' => 'user', 'middleware' => 'auth:api'], function($router) {
     Route::get('/', [UserController::class, 'index']);
     Route::post('/', [UserController::class, 'store']);
     Route::get('/{id}', [UserController::class, 'show']);

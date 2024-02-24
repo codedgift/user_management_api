@@ -67,7 +67,6 @@ class Kernel extends HttpKernel
     ];
 
     protected $routeMiddleware = [
-        // other middleware...
         'passport.auth' => \App\Http\Middleware\PassportAuthMiddleware::class,
         'admin.role.check' => \App\Http\Middleware\CheckAdminRole::class,
     ];
