@@ -11,10 +11,8 @@ class UserService
         return User::paginate(10);
     }
 
-    public function create ($request)
+    public function create ($validatedData)
     {
-        $validatedData = $request->validated();
-
         $validatedData['password'] = bcrypt($validatedData['password']);
 
         $validatedData['email_verified_at'] = now();
@@ -27,11 +25,9 @@ class UserService
        return User::findOrFail($id);
     }
 
-    public function updateRecord ($request, $id)
+    public function updateRecord ($validatedData, $id)
     {
         $user = User::findOrFail($id);
-
-        $validatedData = $request->validated();
 
         $validatedData = array_filter($validatedData, function($value, $key) {
             if (in_array($key, ['name', 'role'])) {

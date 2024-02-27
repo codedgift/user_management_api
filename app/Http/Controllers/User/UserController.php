@@ -8,7 +8,6 @@ use App\Http\Requests\UpdateRequest;
 use App\Services\UserService;
 use App\Traits\Response;
 use Exception;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response as HttpResponse;
@@ -62,7 +61,9 @@ class UserController extends Controller
     {
         try {
 
-            $user = $this->userService->create($request);
+            $validatedData = $request->validated();
+
+            $user = $this->userService->create($validatedData);
 
 
             return $this->sendSuccess(
@@ -100,11 +101,6 @@ class UserController extends Controller
                 ], HttpResponse::HTTP_OK
             );
 
-        } catch (ModelNotFoundException $e) {
-            return $this->sendError([
-                'message' => 'User Not Found!',
-                'status_code' => HttpResponse::HTTP_NOT_FOUND
-            ]);
         } catch (Exception $e) {
 
             return $this->sendError([
@@ -124,7 +120,9 @@ class UserController extends Controller
     {
         try {
 
-            $user = $this->userService->updateRecord($request, $id);
+            $validatedData = $request->validated();
+
+            $user = $this->userService->updateRecord($validatedData, $id);
 
 
             return $this->sendSuccess(
@@ -134,11 +132,6 @@ class UserController extends Controller
                 ], HttpResponse::HTTP_PARTIAL_CONTENT
             );
 
-        } catch (ModelNotFoundException $e) {
-            return $this->sendError([
-                'message' => 'User Not Found!',
-                'status_code' => HttpResponse::HTTP_NOT_FOUND
-            ]);
         } catch (Exception $e) {
 
             return $this->sendError([
@@ -167,11 +160,6 @@ class UserController extends Controller
                 ], HttpResponse::HTTP_OK
             );
 
-        } catch (ModelNotFoundException $e) {
-            return $this->sendError([
-                'message' => 'User Not Found!',
-                'status_code' => HttpResponse::HTTP_NOT_FOUND
-            ]);
         } catch (Exception $e) {
 
             return $this->sendError([

@@ -36,7 +36,9 @@ class RegistrationController extends Controller
     {
         try {
 
-            $user = $this->registrationService->register($request);
+            $validatedData = $request->validated();
+            
+            $user = $this->registrationService->register($validatedData);
 
             return $this->sendSuccess2(
                 [
