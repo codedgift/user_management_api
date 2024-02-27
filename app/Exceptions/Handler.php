@@ -2,10 +2,13 @@
 
 namespace App\Exceptions;
 
-use Exception;
-use Illuminate\Auth\AuthenticationException; // Add this line
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Http\RedirectResponse;
 use Throwable;
+use Illuminate\Validation\ValidationException;
+use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Http\JsonResponse;
 
 class Handler extends ExceptionHandler
 {
@@ -31,13 +34,11 @@ class Handler extends ExceptionHandler
     }
 
     /**
-     * Convert an authentication exception into an unauthenticated response.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Illuminate\Auth\AuthenticationException  $exception
-     * @return \Illuminate\Http\Response
+     * @param $request
+     * @param AuthenticationException $exception
+     * @return JsonResponse
      */
-    protected function unauthenticated($request, AuthenticationException $exception)
+    protected function unauthenticated($request, AuthenticationException $exception): JsonResponse
     {
         if ($request->expectsJson()) {
             return response()->json(['error' => 'Unauthenticated. Please login.'], 401);
@@ -50,4 +51,28 @@ class Handler extends ExceptionHandler
         return response()->json(['error' => 'Unauthenticated. Access denied.'], 401);
     }
 
+    /**
+     * @param $request
+     * @param Throwable $e
+     * @return JsonResponse|RedirectResponse|\Illuminate\Http\Response|Response
+     * @throws Throwable
+     */
+    public function render($request, Throwable $e): \Illuminate\Http\Response|JsonResponse|Response|RedirectResponse
+    {
+        $wantsJson = $request->wantsJson() ||
+                 $request->header('Content-Type') === 'application/json' ||
+                 $request->header('Accept') === 'application/json';
+
+        if ($wantsJson) {
+            if ($e instanceof ValidationException) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Oops! Something went wrong.',
+                    'errors' => $e->validator->errors()
+                ], Response::HTTP_UNPROCESSABLE_ENTITY);
+            }
+        }
+
+        return parent::render($request, $e);
+    }
 }

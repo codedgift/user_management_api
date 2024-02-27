@@ -3,9 +3,6 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Contracts\Validation\Validator;
-use Illuminate\Http\Exceptions\HttpResponseException;
-use Symfony\Component\HttpFoundation\Response;
 
 class RegistrationRequest extends FormRequest
 {
@@ -56,14 +53,5 @@ class RegistrationRequest extends FormRequest
         return [
             'password.regex' => 'Password must contain at least one uppercase letter, one lowercase letter, one numeric digit, and one special character.',
         ];
-    }
-
-    /**
-     * @param Validator $validator
-     * @return mixed
-     */
-    protected function failedValidation(Validator $validator): mixed
-    {
-        throw new HttpResponseException(response()->json(['status' => false, 'message' => 'Something is wrong', 'errors' => $validator->errors()], Response::HTTP_UNPROCESSABLE_ENTITY));
     }
 }

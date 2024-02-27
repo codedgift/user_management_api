@@ -33,7 +33,7 @@ class LoginController extends Controller
      * @param LoginRequest $request
      * @return JsonResponse
      */
-    public function login (LoginRequest $request) : \Illuminate\Http\JsonResponse
+    public function login (LoginRequest $request) : JsonResponse
     {
         try {
 
