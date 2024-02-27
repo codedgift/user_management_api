@@ -37,6 +37,8 @@ class UserController extends Controller
      */
     public function index(): JsonResponse
     {
+        $this->authorize('viewAny', User::class);
+
         try {
             $users = $this->userService->allUsers();
 
@@ -61,6 +63,8 @@ class UserController extends Controller
      */
     public function store(RegistrationRequest $request): JsonResponse
     {
+        $this->authorize('create', User::class);
+
         try {
 
             $validatedData = $request->validated();
@@ -91,6 +95,8 @@ class UserController extends Controller
      */
     public function show(User $user): JsonResponse
     {
+        $this->authorize('view', User::class);
+
         try {
             return $this->sendSuccess(
                 [
@@ -116,6 +122,8 @@ class UserController extends Controller
      */
     public function update(UpdateRequest $request, string $id): JsonResponse
     {
+        $this->authorize('update', User::class);
+
         try {
 
             $validatedData = $request->validated();
@@ -146,6 +154,8 @@ class UserController extends Controller
      */
     public function destroy(string $id): JsonResponse
     {
+        $this->authorize('delete', User::class);
+
         try {
 
             $user = $this->userService->deleteRecord($id);

@@ -38,5 +38,5 @@ Route::group(['prefix' => 'user', 'middleware' => 'auth:api'], function($router)
     Route::post('/', [UserController::class, 'store']);
     Route::get('/{user}', [UserController::class, 'show']);
     Route::patch('/{id}', [UserController::class, 'update']);
-    Route::delete('/{id}', [UserController::class, 'destroy'])->middleware('admin.role.check');
+    Route::delete('/{id}', [UserController::class, 'destroy']);
 });
