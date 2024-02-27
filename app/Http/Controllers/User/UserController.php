@@ -120,15 +120,15 @@ class UserController extends Controller
      * @param string $id
      * @return JsonResponse
      */
-    public function update(UpdateRequest $request, string $id): JsonResponse
+    public function update(UpdateRequest $request, User $user): JsonResponse
     {
-        $this->authorize('update', User::class);
+        $this->authorize('update', $user);
 
         try {
 
             $validatedData = $request->validated();
 
-            $user = $this->userService->updateRecord($validatedData, $id);
+            $user = $this->userService->updateRecord($validatedData, $user->id);
 
 
             return $this->sendSuccess(
@@ -152,13 +152,13 @@ class UserController extends Controller
      * @param string $id
      * @return JsonResponse
      */
-    public function destroy(string $id): JsonResponse
+    public function destroy(User $user): JsonResponse
     {
-        $this->authorize('delete', User::class);
+        $this->authorize('delete', $user);
 
         try {
 
-            $user = $this->userService->deleteRecord($id);
+            $user = $this->userService->deleteRecord($user->id);
 
 
             return $this->sendSuccess(
