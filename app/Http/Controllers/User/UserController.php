@@ -5,6 +5,8 @@ namespace App\Http\Controllers\User;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\RegistrationRequest;
 use App\Http\Requests\UpdateRequest;
+use App\Http\Resources\UserResource;
+use App\Models\User;
 use App\Services\UserService;
 use App\Traits\Response;
 use Exception;
@@ -84,20 +86,16 @@ class UserController extends Controller
 
 
     /**
-     * @param string $id
+     * @param User $user
      * @return JsonResponse
      */
-    public function show(string $id): JsonResponse
+    public function show(User $user): JsonResponse
     {
         try {
-
-            $user = $this->userService->show($id);
-
-
             return $this->sendSuccess(
                 [
                     'message' => 'Successful',
-                    'data' => $user
+                    'data' => new UserResource($user)
                 ], HttpResponse::HTTP_OK
             );
 

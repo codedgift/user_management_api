@@ -36,7 +36,7 @@ Route::group(['prefix' => 'auth', 'middleware' => 'throttle:login_register'], fu
 Route::group(['prefix' => 'user', 'middleware' => 'auth:api'], function($router) {
     Route::get('/', [UserController::class, 'index']);
     Route::post('/', [UserController::class, 'store']);
-    Route::get('/{id}', [UserController::class, 'show']);
+    Route::get('/{user}', [UserController::class, 'show']);
     Route::patch('/{id}', [UserController::class, 'update']);
     Route::delete('/{id}', [UserController::class, 'destroy'])->middleware('admin.role.check');
 });

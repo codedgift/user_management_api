@@ -20,11 +20,6 @@ class UserService
         return User::create($validatedData);
     }
 
-    public function show ($id)
-    {
-       return User::findOrFail($id);
-    }
-
     public function updateRecord ($validatedData, $id)
     {
         $user = User::findOrFail($id);
