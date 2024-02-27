@@ -3,6 +3,7 @@
 namespace App\Exceptions;
 
 use Illuminate\Auth\AuthenticationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Http\RedirectResponse;
 use Throwable;
@@ -41,14 +42,20 @@ class Handler extends ExceptionHandler
     protected function unauthenticated($request, AuthenticationException $exception): JsonResponse
     {
         if ($request->expectsJson()) {
-            return response()->json(['error' => 'Unauthenticated. Please login.'], 401);
+            return response()->json([
+                'status' => false,
+                'error' => 'Unauthenticated. Please login.'
+            ], 401);
         }
 
         // For API-only applications, you might not use the redirect below
         // return redirect()->guest(route('login'));
 
         // If you don't have a web login route, just return a JSON response
-        return response()->json(['error' => 'Unauthenticated. Access denied.'], 401);
+        return response()->json([
+            'status' => false,
+            'error' => 'Unauthenticated. Access denied.'
+        ], 401);
     }
 
     /**
@@ -64,14 +71,40 @@ class Handler extends ExceptionHandler
                  $request->header('Accept') === 'application/json';
 
         if ($wantsJson) {
+
             if ($e instanceof ValidationException) {
+
                 return response()->json([
                     'status' => false,
                     'message' => 'Oops! Something went wrong.',
                     'errors' => $e->validator->errors()
                 ], Response::HTTP_UNPROCESSABLE_ENTITY);
+
+            } elseif ($e instanceof ModelNotFoundException) {
+            
+                return response()->json([
+                    'status' => false,
+                    'message' => 'The requested resource was not found.',
+                ], Response::HTTP_NOT_FOUND);
+    
+            } elseif ($e instanceof InvalidCredentialsException ||
+                $e instanceof UserNotVerifiedException ||
+                $e instanceof UserDeletedException) {
+    
+                $status = match (get_class($e)) {
+                    InvalidCredentialsException::class => Response::HTTP_UNAUTHORIZED,
+                    UserNotVerifiedException::class => Response::HTTP_FORBIDDEN,
+                    UserDeletedException::class => Response::HTTP_NOT_FOUND,
+                    default => Response::HTTP_BAD_REQUEST,
+                };
+    
+                return response()->json([
+                    'status' => false,
+                    'message' => $e->getMessage(),
+                ], $status);
             }
-        }
+            
+        } 
 
         return parent::render($request, $e);
     }

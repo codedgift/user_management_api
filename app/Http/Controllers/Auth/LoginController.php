@@ -44,18 +44,8 @@ class LoginController extends Controller
                     HttpResponse::HTTP_OK
                 );
 
-        } catch (InvalidCredentialsException | UserNotVerifiedException | UserDeletedException $e) {
-
-            $status = match (get_class($e)) {
-                InvalidCredentialsException::class => HttpResponse::HTTP_UNAUTHORIZED,
-                UserNotVerifiedException::class => HttpResponse::HTTP_FORBIDDEN,
-                UserDeletedException::class => HttpResponse::HTTP_NOT_FOUND,
-                default => HttpResponse::HTTP_BAD_REQUEST,
-            };
-
-            return $this->sendError(['message' => $e->getMessage(), 'status_code' => $status]);
-
-        } catch (Exception $e) {
+        } 
+        catch (Exception $e) {
 
             return $this->sendError([
                     'message' => $e->getMessage(),
