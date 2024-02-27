@@ -76,12 +76,10 @@ class LoginService
     {
         $tokenResult = $user->createToken('ApexNetworksAuthToken');
         $accessToken = $tokenResult->accessToken;
-        $refreshToken = $tokenResult->token->id;
 
         return [
             'user' => $user->only(['id', 'name', 'email', 'role']),
-            'access_token' => $accessToken,
-            'refresh_token' => $refreshToken,
+            'access_token' => $accessToken
         ];
     }
 
