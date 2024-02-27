@@ -10,6 +10,7 @@ use Throwable;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Auth\Access\AuthorizationException;
 
 class Handler extends ExceptionHandler
 {
@@ -102,6 +103,11 @@ class Handler extends ExceptionHandler
                     'status' => false,
                     'message' => $e->getMessage(),
                 ], $status);
+            } elseif ($e instanceof AuthorizationException) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'You are unauthorized to perform this action',
+                ], 403);
             }
             
         } 
