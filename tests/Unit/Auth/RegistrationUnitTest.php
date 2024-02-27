@@ -2,12 +2,10 @@
 
 namespace Tests\Unit\Auth;
 
-use App\Http\Requests\RegistrationRequest;
 use App\Models\User;
 use App\Services\RegistrationService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
-use Illuminate\Http\Request;
 
 class RegistrationUnitTest extends TestCase
 {
@@ -25,18 +23,18 @@ class RegistrationUnitTest extends TestCase
     /** @test */
     public function it_registers_a_user_successfully()
     {
-        $mockRequest = $this->mock(RegistrationRequest::class, function ($mock) {
-            $mock->shouldReceive('validated')
-                 ->andReturn([
-                     'name' => 'Gift Doe',
-                     'email' => 'gift@example.com',
-                     'password' => 'Password2024!',
-                     'role' => 'user',
-                 ]);
-        });
+        // Prepare the validated data as it would be after the request validation
+        $validatedData = [
+            'name' => 'Gift Doe',
+            'email' => 'gift@example.com',
+            'password' => 'Password2024!',
+            'role' => 'user',
+        ];
 
-        $user = $this->registrationService->register($mockRequest);
+        // Directly pass the validated data to the register method of the service
+        $user = $this->registrationService->register($validatedData);
 
+        // Assertions to ensure the user was registered correctly
         $this->assertInstanceOf(User::class, $user);
         $this->assertEquals('gift@example.com', $user->email);
         $this->assertDatabaseHas('users', ['email' => 'gift@example.com']);
