@@ -3,6 +3,8 @@
 namespace Tests\Unit\Auth;
 
 // use PHPUnit\Framework\TestCase;
+
+use App\Enums\Role;
 use Illuminate\Support\Str;
 use Tests\TestCase;
 use App\Services\LoginService;
@@ -77,7 +79,7 @@ class LoginUnitTest extends TestCase
         $mockUser->id = Str::uuid();
         $mockUser->name = 'Admin';
         $mockUser->email = 'admin@example.com';
-        $mockUser->role = 'admin';
+        $mockUser->role = Role::Admin->value;
         $mockUser->password = bcrypt('@Password2024');
         $mockUser->email_verified_at = now();
 

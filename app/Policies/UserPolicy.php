@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Enums\Role;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
 use Illuminate\Auth\Access\HandlesAuthorization;
@@ -15,7 +16,7 @@ class UserPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->role === 'admin';
+        return $user->role === Role::Admin->value;
     }
 
     /**
@@ -24,7 +25,7 @@ class UserPolicy
     public function view(User $user, User $model): bool
     {
         // Allow viewing if the user is an admin or if they are viewing their own profile
-        return $user->role === 'admin' || $user->id === $model->id;
+        return $user->role === Role::Admin->value || $user->id === $model->id;
     }
 
     /**
@@ -33,7 +34,7 @@ class UserPolicy
     public function create(User $user): bool
     {
         // Only admins can create new profiles
-        return $user->role === 'admin';
+        return $user->role === Role::Admin->value;
     }
 
     /**
@@ -42,7 +43,7 @@ class UserPolicy
     public function update(User $user, User $model): bool
     {
         // Admins can update any profile, users can only update their own
-        return $user->role === 'admin' || $user->id === $model->id;
+        return $user->role === Role::Admin->value || $user->id === $model->id;
     }
 
     /**
@@ -51,6 +52,6 @@ class UserPolicy
     public function delete(User $user, User $model): bool
     {
         // Only admins can delete profiles
-        return $user->role === 'admin';
+        return $user->role === Role::Admin->value;
     }
 }
